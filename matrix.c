@@ -39,11 +39,12 @@ Matrix* create_matrix_from_file(FILE* file)
 		{
 			printf("Error if file format!\n");
 		}
-		M[i].row = row;
+		/*M[i].row = row;
 		M[i].col = col;
 		M[i].val = val;
 		M[i].cols = cols;
-		M[i].rows = rows;
+		M[i].rows = rows;*/
+		set_elem(M, row, col, val);
 	}
 	
 	return M;
@@ -52,22 +53,29 @@ Matrix* create_matrix_from_file(FILE* file)
 Matrix* create_matrix(int row, int col)
 {
 	Matrix *ptr = NULL;
-	ptr = (Matrix*)malloc(row*col*sizeof(Matrix));
+	ptr = (Matrix*)malloc(sizeof(Matrix));
 	if (!ptr)
 	{
 		printf("Could not allocate memory for matrix!\n");
 		return NULL;
 	}
+	ptr->elem = (Element*)malloc(row*col*sizeof(Element));
+	if (!ptr->elem)
+	{
+		printf("Could not allocate memory for matrix elements!\n");
+		return NULL;
+	}
 
+
+	ptr->rows = row;
+	ptr->cols = col;
 	for (int i = 0; i < row; i++)
 	{
 		for (int j = 0; j < col; j++)
 		{
-			ptr[i].row = i;
-			ptr[i].col = j;
-			ptr[i].val = 0;
-			ptr[i].rows = row;
-			ptr[i].cols = col;
+			ptr->elem[col*i+j].row = i;
+			ptr->elem[col*i+j].col = j;
+			ptr->elem[col*i+j].val = 0;
 		}
 	}
 	return ptr;
@@ -75,12 +83,12 @@ Matrix* create_matrix(int row, int col)
 
 int get_rows(Matrix* matrix)
 {
-	return matrix[0].rows;
+	return matrix->rows;
 }
 
 int get_cols(Matrix* matrix)
 {
-	return matrix[0].cols;
+	return matrix->cols;
 }
 
 double get_elem(Matrix* matrix, int row, int col)
@@ -92,21 +100,26 @@ double get_elem(Matrix* matrix, int row, int col)
 		printf("Invalid index.\n");
 		return 0.0;
 	}
-	return matrix[(row)*cols+col].val;
+	return matrix->elem[(row)*cols+col].val;
 }
 void set_elem(Matrix* matrix, int row, int col, double val)
 {
-	uint32_t cols = matrix[0].cols;
-	uint32_t rows = matrix[0].rows;
+	uint32_t cols = matrix->cols;
+	uint32_t rows = matrix->rows;
 	if ((col > cols) || (row > rows))
 	{
 		printf("Invalid index.\n");
 		return;
 	}
-	matrix[(row)*cols+col].val = val;
+	matrix->elem[(row)*cols+col].val = val;
 }
 
 void free_matrix(Matrix* matrix)
 {
+	// for (int i = 0; i < matrix->rows * matrix-> cols; ++i)
+	// {
+	// 	free
+	// }
+	free(matrix->elem);
 	free(matrix);
 }

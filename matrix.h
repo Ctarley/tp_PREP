@@ -7,12 +7,16 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-typedef struct Matrix {
-	uint32_t rows;
-	uint32_t cols;
+typedef struct Element {
     uint32_t row;
     uint32_t col;
     double val;
+} Element;
+
+typedef struct Matrix {
+	uint32_t rows;
+	uint32_t cols;
+	Element* elem;
 } Matrix;
 
 Matrix* create_matrix_from_file(FILE* file);
